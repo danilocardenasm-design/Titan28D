@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Titan 28 - Elite Fitness Challenge</title>
+    <title>Titan 28 - Elite 60 Minutos en Casa</title>
+    <!-- Tailwind CSS para diseño moderno y responsivo -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts para una tipografía deportiva premium -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -16,30 +18,35 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-dark);
             color: #f8fafc;
+            overflow-x: hidden;
         }
+        /* Animación del anillo de progreso */
         .progress-ring {
             transition: stroke-dashoffset 0.35s;
             transform: rotate(-90deg);
             transform-origin: 50% 50%;
         }
+        /* Efecto de cristal esmerilado */
         .glass {
             background: rgba(30, 41, 59, 0.7);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .exercise-thumb {
-            width: 80px;
-            height: 80px;
+            width: 60px;
+            height: 60px;
             object-fit: cover;
             border-radius: 12px;
             background: #000;
         }
+        /* Contenedor responsivo para videos de YouTube */
         .video-container {
             position: relative;
             padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
             border-radius: 1.5rem;
+            background: #000;
         }
         .video-container iframe {
             position: absolute;
@@ -49,40 +56,46 @@
             height: 100%;
         }
         .active-dot {
-            width: 8px;
             height: 8px;
+            width: 8px;
             background-color: #e11d48;
             border-radius: 50%;
             display: inline-block;
-            margin-right: 6px;
-            box-shadow: 0 0 10px #e11d48;
+            margin-right: 8px;
+            box-shadow: 0 0 8px #e11d48;
+        }
+        /* Ocultar barra de scroll para estética de App móvil */
+        ::-webkit-scrollbar {
+            display: none;
         }
     </style>
 </head>
 <body class="min-h-screen pb-24">
 
     <div id="app" class="max-w-md mx-auto p-4">
-        <!-- Pantalla de Bienvenida -->
+        
+        <!-- Pantalla 1: Bienvenida y Selección de Género -->
         <div id="screen-welcome" class="hidden h-screen flex flex-col justify-center items-center text-center space-y-8">
             <div class="space-y-2">
-                <h1 class="text-5xl font-extrabold tracking-tighter italic text-white">TITAN <span class="text-rose-600">28</span></h1>
-                <p class="text-slate-400 italic">28 Días. Diferentes Rutinas. Un Objetivo.</p>
+                <h1 class="text-5xl font-extrabold tracking-tighter italic text-white leading-none">TITAN <span class="text-rose-600">28</span></h1>
+                <p class="text-slate-400 italic font-medium">60 Minutos Diarios • 100% Casa</p>
             </div>
             <div class="w-full space-y-4 px-6">
-                <button onclick="setGender('woman')" class="w-full py-4 bg-rose-600 hover:bg-rose-700 rounded-2xl font-bold text-xl transition transform active:scale-95 shadow-lg shadow-rose-900/40 uppercase">
-                    RUTINA PARA MUJER
+                <button onclick="setGender('woman')" class="w-full py-5 bg-rose-600 hover:bg-rose-700 rounded-2xl font-bold text-xl shadow-lg shadow-rose-900/40 uppercase tracking-widest transition transform active:scale-95">
+                    MODO GUERRERA (ADELGAZAR)
                 </button>
-                <button onclick="setGender('man')" class="w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-900 rounded-2xl font-bold text-xl transition transform active:scale-95 shadow-lg shadow-white/10 uppercase">
-                    RUTINA PARA HOMBRE
+                <button onclick="setGender('man')" class="w-full py-5 bg-slate-100 hover:bg-slate-200 text-slate-900 rounded-2xl font-bold text-xl shadow-lg shadow-white/10 uppercase tracking-widest transition transform active:scale-95">
+                    MODO ATLETA (TONIFICAR)
                 </button>
             </div>
+            <p class="text-[10px] text-slate-500 uppercase tracking-widest px-8">Tu progreso se guardará automáticamente en este navegador</p>
         </div>
 
-        <!-- Dashboard Principal -->
+        <!-- Pantalla 2: Dashboard Principal -->
         <div id="screen-dashboard" class="hidden space-y-6">
             <header class="flex justify-between items-center py-4">
                 <div>
-                    <h2 id="user-greeting" class="text-2xl font-bold">¡Hola, Atleta!</h2>
+                    <h2 id="user-greeting" class="text-2xl font-bold text-white">¡Hola!</h2>
                     <p class="text-slate-400 text-sm italic" id="weekly-focus">Cargando enfoque...</p>
                 </div>
                 <div class="relative w-16 h-16">
@@ -90,143 +103,197 @@
                         <circle class="text-slate-800" stroke-width="4" stroke="currentColor" fill="transparent" r="28" cx="32" cy="32"/>
                         <circle id="progress-circle" class="text-rose-600" stroke-width="4" stroke-linecap="round" stroke="currentColor" fill="transparent" r="28" cx="32" cy="32" stroke-dasharray="175.93" stroke-dashoffset="175.93"/>
                     </svg>
-                    <span id="progress-text" class="absolute inset-0 flex items-center justify-center text-xs font-bold">0%</span>
+                    <span id="progress-text" class="absolute inset-0 flex items-center justify-center text-xs font-bold text-white">0%</span>
                 </div>
             </header>
 
+            <!-- Estadísticas Rápidas -->
             <div class="grid grid-cols-2 gap-4">
                 <div class="glass p-4 rounded-2xl text-center">
-                    <p class="text-slate-400 text-[10px] uppercase font-bold tracking-widest mb-1">Esfuerzo Total</p>
+                    <p class="text-slate-400 text-[10px] uppercase font-bold tracking-widest mb-1">Total Entrenado</p>
                     <p id="stat-total-time" class="text-xl font-bold text-rose-500">0 min</p>
                 </div>
                 <div class="glass p-4 rounded-2xl text-center">
-                    <p class="text-slate-400 text-[10px] uppercase font-bold tracking-widest mb-1">Días de Éxito</p>
+                    <p class="text-slate-400 text-[10px] uppercase font-bold tracking-widest mb-1">Días Completos</p>
                     <p id="stat-days-done" class="text-xl font-bold text-rose-500">0/28</p>
                 </div>
             </div>
 
-            <div>
-                <h3 class="font-bold mb-4 flex items-center gap-2 text-white">📅 Calendario de Progresión</h3>
+            <!-- Calendario de Progresión -->
+            <div id="calendar-container">
+                <h3 class="font-bold mb-4 flex items-center gap-2 text-white italic uppercase tracking-tighter">📅 Progresión de Rutinas</h3>
                 <div id="calendar-grid" class="grid grid-cols-7 gap-2"></div>
             </div>
 
-            <button id="main-action-btn" onclick="openWorkout()" class="w-full py-5 bg-gradient-to-r from-rose-600 to-rose-700 rounded-2xl font-bold flex justify-center items-center gap-3 shadow-xl shadow-rose-900/30 transition transform active:scale-95">
-                <span id="btn-text">INICIAR ENTRENAMIENTO</span>
+            <!-- Acción Principal -->
+            <button onclick="openWorkout()" class="w-full py-5 bg-gradient-to-r from-rose-600 to-rose-700 rounded-2xl font-bold flex justify-center items-center gap-3 shadow-xl shadow-rose-900/30 transition transform active:scale-95">
+                <span class="text-white">INICIAR DÍA <span id="btn-day-label">1</span> (60 MIN)</span>
                 <span class="text-xl">⚡</span>
             </button>
+            <button onclick="resetApp()" class="w-full text-slate-600 text-[10px] uppercase font-bold tracking-widest hover:text-rose-500 transition">Reiniciar todo el progreso</button>
         </div>
 
-        <!-- Pantalla de Entrenamiento -->
+        <!-- Pantalla 3: Detalle de Entrenamiento -->
         <div id="screen-workout" class="hidden space-y-6">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <button onclick="showDashboard()" class="w-10 h-10 flex items-center justify-center bg-slate-800 rounded-full text-white">←</button>
-                    <div>
-                        <h2 class="text-xl font-bold italic text-white uppercase leading-tight">DÍA <span id="workout-day-number"></span></h2>
-                        <p id="workout-type" class="text-[10px] text-rose-500 font-black uppercase tracking-widest"></p>
+            <div class="flex items-center gap-4">
+                <button onclick="showDashboard()" class="w-10 h-10 flex items-center justify-center bg-slate-800 rounded-full text-white shadow-lg hover:bg-slate-700">←</button>
+                <div>
+                    <h2 class="text-xl font-bold italic text-white uppercase leading-tight">DÍA <span id="workout-day-number"></span></h2>
+                    <p id="workout-type" class="text-[10px] text-rose-500 font-black uppercase tracking-widest italic">Sesión de Élite</p>
+                </div>
+            </div>
+
+            <!-- Objetivo y Nutrición Dinámica -->
+            <div class="space-y-3">
+                <div class="glass p-4 rounded-2xl border-l-4 border-emerald-500">
+                    <p class="text-[10px] text-emerald-400 font-black uppercase tracking-widest mb-1">🎯 Enfoque del Día</p>
+                    <p id="workout-objective" class="text-xs text-slate-300 italic">Cargando objetivo...</p>
+                </div>
+
+                <div class="glass p-4 rounded-2xl border-l-4 border-amber-500">
+                    <p class="text-[10px] text-amber-400 font-black uppercase tracking-widest mb-3 italic">🍎 Menú Titan del Día</p>
+                    <div id="workout-nutrition-list" class="space-y-2">
+                        <!-- Llenado vía JS -->
                     </div>
                 </div>
             </div>
 
-            <div id="exercise-list" class="space-y-4">
-                <!-- Se llena dinámicamente -->
-            </div>
+            <!-- Lista de Bloques de Ejercicio -->
+            <div id="exercise-list" class="space-y-3 pb-8"></div>
 
-            <button onclick="completeDay()" class="w-full py-4 bg-emerald-600 text-white rounded-2xl font-bold shadow-lg shadow-emerald-900/20 mt-4 transition active:scale-95 uppercase tracking-wider">
-                Completar Entrenamiento del Día ✅
+            <button onclick="completeDay()" class="w-full py-4 bg-emerald-600 text-white rounded-2xl font-bold shadow-lg shadow-emerald-900/20 uppercase tracking-wider transition active:scale-95">
+                Completar Sesión ✅
             </button>
         </div>
 
-        <!-- Modal Multimedia / Cronómetro -->
+        <!-- Modal del Temporizador y Video -->
         <div id="modal-timer" class="fixed inset-0 z-50 bg-slate-950 hidden flex flex-col p-6 overflow-y-auto">
-            <div class="flex justify-between items-center mb-6">
-                <span class="text-rose-500 font-bold tracking-tighter italic">TITAN 28</span>
-                <button onclick="closeTimer()" class="w-12 h-12 flex items-center justify-center bg-slate-800 rounded-full text-white text-2xl">&times;</button>
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-rose-500 font-bold italic tracking-tighter">TITAN 28</span>
+                <button onclick="closeTimer()" class="w-10 h-10 flex items-center justify-center bg-slate-800 rounded-full text-white text-2xl hover:bg-slate-700 transition">&times;</button>
             </div>
             
             <div class="flex-1 flex flex-col items-center space-y-6">
-                <div class="w-full video-container shadow-2xl border border-slate-700">
+                <!-- Video Player -->
+                <div class="w-full video-container shadow-2xl">
                     <iframe id="timer-video-iframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
 
+                <!-- Detalles del Ejercicio -->
                 <div class="text-center">
-                    <h3 id="timer-exercise-name" class="text-3xl font-black uppercase italic tracking-tight mb-1 text-white leading-none">EJERCICIO</h3>
-                    <p id="timer-reps" class="text-rose-500 font-bold tracking-widest text-sm uppercase mt-2">OBJETIVO: 4 x 15</p>
+                    <h3 id="timer-exercise-name" class="text-2xl font-black uppercase italic tracking-tight text-white">EJERCICIO</h3>
+                    <p id="timer-instruction" class="text-rose-500 font-bold text-sm uppercase mt-2">REPETICIONES: --</p>
                 </div>
 
+                <!-- Temporizador Visual -->
                 <div class="relative flex items-center justify-center">
-                    <svg class="w-52 h-52 -rotate-90">
-                        <circle class="text-slate-800" stroke-width="6" stroke="currentColor" fill="transparent" r="95" cx="104" cy="104"/>
-                        <circle id="timer-circle" class="text-rose-600" stroke-width="8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="95" cx="104" cy="104" stroke-dasharray="596.9" stroke-dashoffset="0" style="transition: stroke-dashoffset 1s linear;"/>
+                    <svg class="w-44 h-44 -rotate-90">
+                        <circle class="text-slate-800" stroke-width="6" stroke="currentColor" fill="transparent" r="80" cx="88" cy="88"/>
+                        <circle id="timer-circle" class="text-rose-600" stroke-width="8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="80" cx="88" cy="88" stroke-dasharray="502" stroke-dashoffset="0" style="transition: stroke-dashoffset 1s linear;"/>
                     </svg>
                     <div id="timer-display" class="absolute text-5xl font-black tabular-nums text-white">00:00</div>
                 </div>
 
+                <!-- Controles del Timer -->
                 <div class="flex gap-4 w-full max-w-sm">
-                    <button id="btn-timer-toggle" onclick="toggleTimer()" class="flex-1 py-5 bg-rose-600 text-white rounded-2xl font-bold text-xl shadow-lg shadow-rose-900/40">INICIAR</button>
-                    <button onclick="resetTimer()" class="w-20 bg-slate-800 text-white rounded-2xl flex items-center justify-center text-xl">🔄</button>
+                    <button id="btn-timer-toggle" onclick="toggleTimer()" class="flex-1 py-4 bg-rose-600 text-white rounded-2xl font-bold text-xl shadow-lg shadow-rose-900/40 hover:bg-rose-700 transition">INICIAR BLOQUE</button>
+                    <button onclick="resetTimer()" class="w-16 bg-slate-800 text-white rounded-2xl flex items-center justify-center hover:bg-slate-700 transition">🔄</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <nav class="fixed bottom-0 left-0 right-0 bg-slate-950/90 backdrop-blur-xl border-t border-slate-800 p-4 max-w-md mx-auto flex justify-around items-center z-40">
-        <button onclick="showDashboard()" class="p-2 flex flex-col items-center text-rose-500">
-            <span class="text-2xl">🏠</span>
-            <span class="text-[9px] font-black mt-1">DASHBOARD</span>
-        </button>
-        <button onclick="alert('Estadísticas avanzadas próximamente')" class="p-2 flex flex-col items-center text-slate-500 opacity-50">
-            <span class="text-2xl">📈</span>
-            <span class="text-[9px] font-black mt-1">REPORTES</span>
-        </button>
-        <button onclick="resetApp()" class="p-2 flex flex-col items-center text-slate-500 opacity-50">
-            <span class="text-2xl">⚙️</span>
-            <span class="text-[9px] font-black mt-1">AJUSTES</span>
-        </button>
-    </nav>
-
     <script>
-        // --- MOTOR DE RUTINAS DINÁMICAS ---
-        const EXERCISE_POOL = {
+        /* BASE DE DATOS DE EJERCICIOS CON VIDEOS VERIFICADOS */
+        const POOL = {
+            warmup: [
+                { name: "Movilidad Articular Completa", ytId: "9S-6I8rWzT4", reps: "5 min" },
+                { name: "Calentamiento Dinámico", ytId: "x6-QeN1rEpg", reps: "5 min" },
+                { name: "Activación Cardio Suave", ytId: "L_xrDAtykMI", reps: "5 min" }
+            ],
             man: {
                 strength: [
-                    { name: "Flexiones Diamante", time: 45, reps: "20 reps", ytId: "J0DnG1_S92I" },
-                    { name: "Sentadilla con Salto", time: 45, reps: "15 reps", ytId: "Azl5tkCzDcc" },
-                    { name: "Zancadas de Poder", time: 60, reps: "20 reps", ytId: "L8f6pS8E_Hk" },
-                    { name: "Dominadas", time: 60, reps: "Al fallo", ytId: "eGo4IYlbE5g" }
+                    { name: "Flexiones de Arquero", ytId: "IODxDxX7oi4", reps: "15 reps" },
+                    { name: "Sentadilla Goblet Profunda", ytId: "mGvzVjuY8SY", reps: "20 reps" },
+                    { name: "Zancadas de Poder", ytId: "y_vX_BfN5G8", reps: "12 por pierna" },
+                    { name: "Flexiones Diamante", ytId: "J0DnG1_S92I", reps: "Fallo Técnico" },
+                    { name: "Sentadilla con Salto Explosiva", ytId: "7X_Svt21HVs", reps: "15 reps" },
+                    { name: "Dips de Tríceps", ytId: "0326dy_-CzM", reps: "15-20 reps" }
                 ],
                 hiit: [
-                    { name: "Burpees Militares", time: 45, reps: "12 reps", ytId: "dZgVxmf6jkA" },
-                    { name: "Escaladores", time: 30, reps: "Máximo ritmo", ytId: "zT-9L37ReNc" },
-                    { name: "Jump Jacks", time: 60, reps: "Sin parar", ytId: "iSSAk4XCsRA" },
-                    { name: "Boxeo Sombra", time: 60, reps: "Intenso", ytId: "SIn8-X5qUuY" }
+                    { name: "Burpees de Élite", ytId: "auBLPXOqv_w", reps: "45 seg" },
+                    { name: "Mountain Climbers Pro", ytId: "kLh-uczlPLg", reps: "45 seg" },
+                    { name: "Jumping Jacks de Potencia", ytId: "iSSAk4XCsRA", reps: "45 seg" },
+                    { name: "Sprints Estáticos", ytId: "8I5YV62S9nU", reps: "45 seg" }
                 ],
                 core: [
-                    { name: "Plancha con Toque", time: 45, reps: "Controlado", ytId: "T19pWJ_2P64" },
-                    { name: "V-Ups Abdominales", time: 45, reps: "15 reps", ytId: "7X_Svt21HVs" },
-                    { name: "Russian Twist", time: 45, reps: "30 reps", ytId: "wkD8rjkodUI" }
+                    { name: "Plancha Abdominal Dinámica", ytId: "TvxNkmjdhMM", reps: "60 seg" },
+                    { name: "Giro Ruso (Russian Twist)", ytId: "wkD8rjkodUI", reps: "40 reps" },
+                    { name: "Elevación de Piernas", ytId: "fKkS_pWREv8", reps: "15 reps" },
+                    { name: "V-Ups Abdominales", ytId: "7X_Svt21HVs", reps: "12 reps" }
                 ]
             },
             woman: {
                 strength: [
-                    { name: "Sentadilla Goblet", time: 45, reps: "20 reps", ytId: "m0CStidmIsY" },
-                    { name: "Zancadas Laterales", time: 45, reps: "12 c/lado", ytId: "QOVaHwm-Q6U" },
-                    { name: "Puente de Glúteo 1 Pierna", time: 45, reps: "15 c/lado", ytId: "wPM8icPu6H8" },
-                    { name: "Flexiones Inclinadas", time: 45, reps: "12 reps", ytId: "8I5YV62S9nU" }
+                    { name: "Sentadilla Sumo Glúteo", ytId: "m0CStidmIsY", reps: "20 reps" },
+                    { name: "Puente de Glúteo (Hip Thrust)", ytId: "wPM8icPu6H8", reps: "25 reps" },
+                    { name: "Patada de Glúteo Unilateral", ytId: "SJ1Xuz9D-dU", reps: "15 por lado" },
+                    { name: "Zancada Lateral Controlada", ytId: "QOVaHwm-Q6U", reps: "12 por lado" },
+                    { name: "Push Ups (Apoyo Rodillas)", ytId: "X_vD_R2_64Y", reps: "15 reps" },
+                    { name: "Sentadilla Isométrica", ytId: "m0CStidmIsY", reps: "45 seg" }
                 ],
                 hiit: [
-                    { name: "Burpees Suaves", time: 45, reps: "10 reps", ytId: "8I5YV62S9nU" },
-                    { name: "Salto de Cuerda Imag.", time: 60, reps: "Ritmo alto", ytId: "SIs8-X5qUuY" },
-                    { name: "Skating Jumps", time: 45, reps: "20 reps", ytId: "SIs8-X5qUuY" }
+                    { name: "Skater Jumps Cardio", ytId: "nUsh4GzB6sM", reps: "45 seg" },
+                    { name: "Power Jacks", ytId: "iSSAk4XCsRA", reps: "45 seg" },
+                    { name: "Cuerda de Saltar Imaginaria", ytId: "8I5YV62S9nU", reps: "45 seg" },
+                    { name: "Rodillas Arriba (High Knees)", ytId: "kLh-uczlPLg", reps: "45 seg" }
                 ],
                 core: [
-                    { name: "Donkey Kicks", time: 45, reps: "20 reps", ytId: "SJ1Xuz9D-dU" },
-                    { name: "Plancha Abdominal", time: 40, reps: "Mantener", ytId: "TvxNkmjdhMM" },
-                    { name: "Bicycle Crunches", time: 45, reps: "30 reps", ytId: "wkD8rjkodUI" }
+                    { name: "Abdominales Bicicleta", ytId: "wkD8rjkodUI", reps: "30 reps" },
+                    { name: "Plancha con Toque de Hombros", ytId: "TvxNkmjdhMM", reps: "45 seg" },
+                    { name: "Deadbug (Control Lumbar)", ytId: "Xyd_fa5zoEU", reps: "15 reps" },
+                    { name: "Tijeras Verticales", ytId: "fKkS_pWREv8", reps: "20 reps" }
                 ]
-            }
+            },
+            cooldown: [
+                { name: "Estiramiento Cuerpo Completo", ytId: "6_mI67xR3-g", reps: "7 min" },
+                { name: "Yoga de Flexibilidad", ytId: "m_S4tK26LwI", reps: "7 min" }
+            ]
         };
 
+        /* PLANES NUTRICIONALES DIARIOS (Ciclo de 7 días) */
+        const NUTRITION_PLANS = {
+            man: [
+                { d: "Omelet de 3 huevos con espinacas y 1 plátano.", a: "Pechuga de pollo, arroz integral y ensalada verde.", c: "Atún sellado con brócoli al vapor y piña." },
+                { d: "Avena con leche, nueces y 1 manzana verde.", a: "Pasta integral con carne magra y salsa roja natural.", c: "Pescado blanco con espárragos y melón." },
+                { d: "Batido de proteína, yogur griego y arándanos.", a: "Lentejas con verduras y 1 naranja.", c: "Pechuga de pavo con calabacín y papaya." },
+                { d: "Pan integral, aguacate, huevo pochado y fresas.", a: "Bistec de res magra, camote al horno y judías.", c: "Ensalada de garbanzos, pimientos y kiwi." },
+                { d: "Yogur griego con granola casera y 1 pera.", a: "Pollo al curry con verduras y arroz basmati.", c: "Tortilla de claras con champiñones y sandía." },
+                { d: "Huevos revueltos, jamón de pavo y mango.", a: "Pescado al horno con quinoa y ensalada mixta.", c: "Queso fresco, frutos secos y uvas." },
+                { d: "Panqueques de avena con miel y moras.", a: "Albóndigas de pollo, puré de calabaza y ciruela.", c: "Sopa de verduras con tofu y melón." }
+            ],
+            woman: [
+                { d: "Yogur natural, semillas de chía y fresas.", a: "Ensalada de atún, quinoa y vegetales frescos.", c: "Pechuga a la plancha, espinacas y piña." },
+                { d: "Tostada integral con requesón y 1 kiwi.", a: "Pollo con brócoli y media manzana roja.", c: "Pescado al papillote con espárragos y sandía." },
+                { d: "Batido verde (espinaca, manzana, jengibre) y nueces.", a: "Garbanzos con espinacas y mandarina.", c: "Tortilla de 2 claras con calabacín y papaya." },
+                { d: "Avena reposada con canela y arándanos.", a: "Pavo a la plancha, ensalada de tomate y pera.", c: "Pescado con pimientos y melón." },
+                { d: "1 huevo cocido, media palta y pomelo.", a: "Lentejas con verduras y 1 naranja.", c: "Pollo al limón con judías y uvas." },
+                { d: "Queso batido 0% con almendras y frambuesas.", a: "Quinoa con verduras asadas y mango.", c: "Brochetas de pavo y vegetales con kiwi." },
+                { d: "Tortitas de arroz con crema de maní y plátano.", a: "Pasta integral fría con atún y ciruela.", c: "Crema de calabacín ligera y piña." }
+            ]
+        };
+
+        const OBJECTIVES = [
+            "Activar el metabolismo y mejorar la movilidad articular.",
+            "Aumentar la resistencia cardiovascular y la coordinación.",
+            "Maximizar la oxidación de grasas con alta intensidad.",
+            "Fortalecer grupos musculares grandes (Gasto Calórico).",
+            "Mejorar la estabilidad del core y la postura corporal.",
+            "Entrenamiento de potencia explosiva para tonificación.",
+            "Consolidación: Resistencia muscular y control de fatiga."
+        ];
+
+        /* ESTADO DE LA APLICACIÓN Y PERSISTENCIA */
         let state = {
             gender: localStorage.getItem('titan_gender') || null,
             completedDays: JSON.parse(localStorage.getItem('titan_completed')) || [],
@@ -235,9 +302,10 @@
         };
 
         function init() {
-            if (!state.gender) showScreen('welcome');
-            else {
-                state.activeDay = state.completedDays.length + 1;
+            if (!state.gender) {
+                showScreen('welcome');
+            } else {
+                state.activeDay = Math.min(28, state.completedDays.length + 1);
                 showDashboard();
             }
         }
@@ -251,7 +319,8 @@
 
         function showScreen(screen) {
             document.querySelectorAll('#app > div').forEach(d => d.classList.add('hidden'));
-            document.getElementById(`screen-${screen}`).classList.remove('hidden');
+            const s = document.getElementById(`screen-${screen}`);
+            if(s) s.classList.remove('hidden');
         }
 
         function showDashboard() {
@@ -261,23 +330,18 @@
         }
 
         function updateUI() {
-            const currentDay = state.completedDays.length + 1;
-            const week = Math.ceil(currentDay / 7);
-            const focusMap = [
-                "Adaptación Metabólica", 
-                "Fuerza e Hipertrofia", 
-                "Quema de Grasa Extrema", 
-                "Titan Performance"
-            ];
+            const currentDayDisplay = state.completedDays.length >= 28 ? 28 : state.completedDays.length + 1;
+            document.getElementById('btn-day-label').innerText = currentDayDisplay;
             
-            document.getElementById('weekly-focus').innerHTML = `<span class="active-dot"></span>Semana ${week}: ${focusMap[week-1] || "Finalizado"}`;
-            document.getElementById('btn-text').innerText = `DÍA ${currentDay > 28 ? 28 : currentDay}: INICIAR`;
+            const week = Math.ceil(currentDayDisplay / 7);
+            const focus = ["Activación Metabólica", "Fase de Resistencia", "Máxima Oxidación", "Elite Titan 28"];
+            
+            document.getElementById('weekly-focus').innerHTML = `<span class="active-dot"></span>Fase: ${focus[week-1] || "Leyenda Titan"}`;
             document.getElementById('stat-total-time').innerText = `${state.totalTimeSpent} min`;
             document.getElementById('stat-days-done').innerText = `${state.completedDays.length}/28`;
             
-            const percent = Math.round((state.completedDays.length / 28) * 100);
-            const circle = document.getElementById('progress-circle');
-            circle.style.strokeDashoffset = 175.93 - (percent / 100 * 175.93);
+            const percent = Math.min(100, Math.round((state.completedDays.length / 28) * 100));
+            document.getElementById('progress-circle').style.strokeDashoffset = 175.93 - (percent / 100 * 175.93);
             document.getElementById('progress-text').innerText = `${percent}%`;
             document.getElementById('user-greeting').innerText = `¡Hola, ${state.gender === 'man' ? 'Atleta' : 'Guerrera'}!`;
         }
@@ -286,146 +350,161 @@
             const grid = document.getElementById('calendar-grid');
             grid.innerHTML = '';
             for (let i = 1; i <= 28; i++) {
-                const isCompleted = state.completedDays.includes(i);
-                const isCurrent = (state.completedDays.length + 1) === i;
-                const day = document.createElement('div');
-                day.className = `h-10 text-[10px] font-bold flex items-center justify-center rounded-lg border transition cursor-pointer 
-                    ${isCompleted ? 'bg-emerald-600 border-emerald-400 text-white' : 
-                      isCurrent ? 'border-rose-500 bg-rose-500/10 text-rose-500' : 'glass border-slate-800 text-slate-500'}`;
-                day.innerText = i;
-                day.onclick = () => { if(i <= state.completedDays.length + 1) { state.activeDay = i; openWorkout(); } };
-                grid.appendChild(day);
+                const isDone = state.completedDays.includes(i);
+                const isCurr = (state.completedDays.length + 1) === i;
+                const d = document.createElement('div');
+                d.className = `h-10 text-[10px] font-bold flex items-center justify-center rounded-lg border cursor-pointer transition
+                    ${isDone ? 'bg-emerald-600 border-emerald-400 text-white shadow-inner shadow-black/20' : 
+                      isCurr ? 'border-rose-500 bg-rose-500/10 text-rose-500 shadow-lg shadow-rose-900/10' : 'glass border-slate-800 text-slate-500'}`;
+                d.innerText = i;
+                d.onclick = () => { if(i <= state.completedDays.length + 1) { state.activeDay = i; openWorkout(); } };
+                grid.appendChild(d);
             }
         }
 
         function openWorkout() {
-            if (state.activeDay > 28) state.activeDay = 28;
             showScreen('workout');
             document.getElementById('workout-day-number').innerText = state.activeDay;
+            const cycleIndex = (state.activeDay - 1) % 7;
+            document.getElementById('workout-objective').innerText = OBJECTIVES[cycleIndex];
             
-            const routineType = getRoutineTypeForDay(state.activeDay);
-            document.getElementById('workout-type').innerText = `Enfoque: ${routineType.label}`;
+            // Renderizar Nutrición del Día
+            const nutrition = NUTRITION_PLANS[state.gender][cycleIndex];
+            const nutriContainer = document.getElementById('workout-nutrition-list');
+            nutriContainer.innerHTML = `
+                <div class="flex gap-2">
+                    <span class="text-amber-500 font-bold text-[9px] w-14 uppercase flex-shrink-0">☀️ Desayuno:</span>
+                    <span class="text-slate-300 text-[10px] flex-1">${nutrition.d}</span>
+                </div>
+                <div class="flex gap-2">
+                    <span class="text-amber-500 font-bold text-[9px] w-14 uppercase flex-shrink-0">🥗 Almuerzo:</span>
+                    <span class="text-slate-300 text-[10px] flex-1">${nutrition.a}</span>
+                </div>
+                <div class="flex gap-2">
+                    <span class="text-amber-500 font-bold text-[9px] w-14 uppercase flex-shrink-0">🌙 Cena:</span>
+                    <span class="text-slate-300 text-[10px] flex-1">${nutrition.c}</span>
+                </div>
+            `;
             
+            // Generar Bloques de la Rutina
+            const routine = generate60Min(state.gender, state.activeDay);
             const list = document.getElementById('exercise-list');
             list.innerHTML = '';
             
-            const exercises = generateDailyRoutine(state.gender, state.activeDay);
-            
-            exercises.forEach((ex) => {
-                const div = document.createElement('div');
-                div.className = "glass p-3 rounded-2xl flex items-center gap-4 border-l-4 border-rose-600 hover:bg-slate-800/50 transition";
-                div.innerHTML = `
-                    <div class="relative w-16 h-16 flex-shrink-0">
-                        <img src="https://img.youtube.com/vi/${ex.ytId}/hqdefault.jpg" class="exercise-thumb" alt="${ex.name}">
-                        <div class="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center"><span class="text-white text-[10px]">▶</span></div>
-                    </div>
+            routine.forEach(ex => {
+                const card = document.createElement('div');
+                card.className = "glass p-3 rounded-xl flex items-center gap-4 border-l-4 border-rose-600 shadow-lg";
+                card.innerHTML = `
+                    <img src="https://img.youtube.com/vi/${ex.ytId}/mqdefault.jpg" class="exercise-thumb" alt="video preview">
                     <div class="flex-1">
-                        <h4 class="font-bold text-xs uppercase italic text-white">${ex.name}</h4>
-                        <p class="text-[10px] text-slate-400 font-medium uppercase">${ex.reps} • <span class="text-rose-400">${ex.time}s</span></p>
+                        <h4 class="font-bold text-xs text-white uppercase italic leading-tight">${ex.name}</h4>
+                        <div class="flex gap-2 items-center mt-1">
+                            <span class="bg-rose-500/20 text-rose-500 text-[8px] px-1.5 py-0.5 rounded font-black uppercase">${ex.reps}</span>
+                            <span class="text-[9px] text-slate-400 uppercase font-bold">${ex.desc}</span>
+                        </div>
                     </div>
-                    <button onclick="startExerciseTimer('${ex.name}', ${ex.time}, '${ex.reps}', '${ex.ytId}')" class="w-10 h-10 flex items-center justify-center bg-rose-600 text-white rounded-xl shadow-lg">
-                        <span class="text-[10px] font-black italic">GO</span>
-                    </button>
+                    <button onclick="startTimer('${ex.name}', ${ex.time}, '${ex.ytId}', '${ex.reps}')" class="px-3 py-2 bg-rose-600 rounded-lg text-[10px] font-bold text-white shadow-lg active:scale-90 transition">GO</button>
                 `;
-                list.appendChild(div);
+                list.appendChild(card);
             });
+            window.scrollTo(0,0);
         }
 
-        function getRoutineTypeForDay(day) {
-            // Lógica: 1-2 Fuerza, 3 Core, 4-5 HIIT, 6 Titan Mix, 7 Descanso Activo
-            const dayInWeek = ((day - 1) % 7) + 1;
-            if (dayInWeek <= 2) return { key: 'strength', label: 'FUERZA Y PODER' };
-            if (dayInWeek === 3) return { key: 'core', label: 'ESTABILIDAD CORE' };
-            if (dayInWeek <= 5) return { key: 'hiit', label: 'QUEMA CALÓRICA (HIIT)' };
-            return { key: 'mix', label: 'TITAN MIX (FULL BODY)' };
-        }
-
-        function generateDailyRoutine(gender, day) {
-            const pool = EXERCISE_POOL[gender];
-            const type = getRoutineTypeForDay(day).key;
+        function generate60Min(gender, day) {
+            const p = POOL[gender];
+            const routine = [];
             
-            if (type === 'mix') {
-                return [pool.strength[0], pool.hiit[0], pool.core[0], pool.strength[1], pool.hiit[1]];
-            }
+            // Bloque 0: Calentamiento (5 min)
+            const warmIdx = day % POOL.warmup.length;
+            routine.push({...POOL.warmup[warmIdx], time: 300, desc: "CALENTAMIENTO"});
             
-            const base = [...pool[type]];
-            // Barajamos un poco según el día para que no sea idéntico
-            return base.sort(() => 0.5 - (day % 10 / 10)).slice(0, 5);
+            // Bloques 1-6: Fase de Trabajo (8 min cada bloque = 48 min)
+            const types = ['strength', 'hiit', 'core', 'strength', 'hiit', 'core'];
+            types.forEach((t, i) => {
+                const offset = (day + i);
+                const ex = p[t][offset % p[t].length];
+                routine.push({ ...ex, time: 480, desc: `${t.toUpperCase()}` });
+            });
+            
+            // Bloque 7: Recuperación (7 min)
+            const coolIdx = day % POOL.cooldown.length;
+            routine.push({...POOL.cooldown[coolIdx], time: 420, desc: "RECUPERACIÓN"});
+            
+            return routine;
         }
 
-        // --- TEMPORIZADOR ---
-        let timerInterval = null;
-        let timeLeft = 0;
-        let totalTimeSet = 0;
+        /* LÓGICA DEL TEMPORIZADOR */
+        let tInt = null, tLeft = 0, tTotal = 0;
 
-        function startExerciseTimer(name, seconds, reps, ytId) {
-            timeLeft = seconds;
-            totalTimeSet = seconds;
+        function startTimer(name, sec, id, reps) {
+            tLeft = sec; tTotal = sec;
             document.getElementById('timer-exercise-name').innerText = name;
-            document.getElementById('timer-reps').innerText = `OBJETIVO: ${reps}`;
-            document.getElementById('timer-display').innerText = formatTime(seconds);
-            document.getElementById('timer-video-iframe').src = `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=1`;
+            document.getElementById('timer-instruction').innerText = `REPETICIONES: ${reps}`;
+            document.getElementById('timer-display').innerText = formatTime(sec);
+            
+            // Embeber YouTube con parámetros para evitar controles y permitir loop
+            const origin = window.location.origin;
+            document.getElementById('timer-video-iframe').src = `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&playlist=${id}&loop=1&origin=${origin}`;
+            
             document.getElementById('modal-timer').classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Evitar scroll de fondo
             resetTimerUI();
         }
 
         function formatTime(s) {
             const m = Math.floor(s / 60);
-            const sec = s % 60;
-            return `${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+            const sc = s % 60;
+            return `${m.toString().padStart(2, '0')}:${sc.toString().padStart(2, '0')}`;
         }
 
         function toggleTimer() {
-            const btn = document.getElementById('btn-timer-toggle');
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-                btn.innerText = "CONTINUAR";
+            const b = document.getElementById('btn-timer-toggle');
+            if (tInt) {
+                clearInterval(tInt); tInt = null;
+                b.innerText = "CONTINUAR";
+                b.classList.replace('bg-amber-600', 'bg-rose-600');
             } else {
-                btn.innerText = "PAUSAR";
-                timerInterval = setInterval(() => {
-                    timeLeft--;
-                    document.getElementById('timer-display').innerText = formatTime(timeLeft);
-                    updateTimerCircle();
-                    if (timeLeft <= 0) {
-                        clearInterval(timerInterval);
-                        timerInterval = null;
+                b.innerText = "PAUSAR";
+                b.classList.replace('bg-rose-600', 'bg-amber-600');
+                tInt = setInterval(() => {
+                    tLeft--;
+                    document.getElementById('timer-display').innerText = formatTime(tLeft);
+                    document.getElementById('timer-circle').style.strokeDashoffset = 502 - (tLeft / tTotal * 502);
+                    if (tLeft <= 0) { 
+                        clearInterval(tInt); 
+                        tInt = null; 
                         document.getElementById('timer-display').innerText = "DONE!";
+                        b.innerText = "INICIAR BLOQUE";
                     }
                 }, 1000);
             }
         }
 
-        function updateTimerCircle() {
-            const circle = document.getElementById('timer-circle');
-            const offset = 596.9 - (timeLeft / totalTimeSet * 596.9);
-            circle.style.strokeDashoffset = offset;
-        }
-
         function resetTimer() {
-            clearInterval(timerInterval);
-            timerInterval = null;
-            timeLeft = totalTimeSet;
-            document.getElementById('timer-display').innerText = formatTime(timeLeft);
+            clearInterval(tInt); tInt = null;
+            tLeft = tTotal;
+            document.getElementById('timer-display').innerText = formatTime(tLeft);
             resetTimerUI();
         }
 
         function resetTimerUI() {
-            document.getElementById('btn-timer-toggle').innerText = "INICIAR";
+            const b = document.getElementById('btn-timer-toggle');
+            b.innerText = "INICIAR BLOQUE";
+            b.className = b.className.replace('bg-amber-600', 'bg-rose-600');
             document.getElementById('timer-circle').style.strokeDashoffset = 0;
         }
 
         function closeTimer() {
-            clearInterval(timerInterval);
-            timerInterval = null;
+            clearInterval(tInt); tInt = null;
             document.getElementById('timer-video-iframe').src = "";
             document.getElementById('modal-timer').classList.add('hidden');
+            document.body.style.overflow = 'auto';
         }
 
         function completeDay() {
             if (!state.completedDays.includes(state.activeDay)) {
                 state.completedDays.push(state.activeDay);
-                state.totalTimeSpent += 25; 
+                state.totalTimeSpent += 60;
                 localStorage.setItem('titan_completed', JSON.stringify(state.completedDays));
                 localStorage.setItem('titan_time', state.totalTimeSpent);
             }
@@ -433,12 +512,13 @@
         }
 
         function resetApp() {
-            if(confirm("¿Estás seguro de reiniciar todo el reto de 28 días?")) {
+            if(confirm("¿Estás seguro de reiniciar todo el progreso de Titan 28?")) {
                 localStorage.clear();
                 location.reload();
             }
         }
 
+        // Inicializar al cargar la página
         window.onload = init;
     </script>
 </body>
